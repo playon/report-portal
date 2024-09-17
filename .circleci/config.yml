@@ -21,6 +21,9 @@ workflows:
     jobs:
       - Deploy:
           name: Deploy Report Portal
+          context:
+            - PLAYON_SHARED_STAGE_AWS
+
 
 
 # VS Code Extension Version: 1.5.1
