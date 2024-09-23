@@ -1,18 +1,18 @@
 #!/bin/bash
 
-AWS_ACCOUNT_ID=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .AWS_ACCOUNT_ID)
-AWS_REGION=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .AWS_REGION)
-CLUSTER_NAME=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .CLUSTER_NAME)
-LAMBDA_FUNCTION_NAME=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .LAMBDA_FUNCTION_NAME)
+AWS_ACCOUNT_ID=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .AWS_ACCOUNT_ID)
+AWS_REGION=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .AWS_REGION)
+CLUSTER_NAME=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .CLUSTER_NAME)
+LAMBDA_FUNCTION_NAME=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .LAMBDA_FUNCTION_NAME)
 
-FAMILY=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .Traefik.Family)
-SERVICE_NAME=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .Traefik.ServiceName)
-TASK_ROLE=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .Traefik.TaskRole)
-EXECUTION_TASK_ROLE=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .Traefik.ExecutionTaskRole)
-AWS_LOGS_GROUP=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .Traefik.AwsLogsGroup)
+FAMILY=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .Traefik.Family)
+SERVICE_NAME=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .Traefik.ServiceName)
+TASK_ROLE=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .Traefik.TaskRole)
+EXECUTION_TASK_ROLE=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .Traefik.ExecutionTaskRole)
+AWS_LOGS_GROUP=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .Traefik.AwsLogsGroup)
 
-FILE_SYSTEM_NAME=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .Traefik.Volume.Name)
-FILE_SYSTEM_ID=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .Traefik.Volume.FileSystemId)
+FILE_SYSTEM_NAME=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .Traefik.Volume.Name)
+FILE_SYSTEM_ID=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .Traefik.Volume.FileSystemId)
 
 CONTAINER_DEFINITION=$(jq -n \
   --arg aws_logs_group "$AWS_LOGS_GROUP" \

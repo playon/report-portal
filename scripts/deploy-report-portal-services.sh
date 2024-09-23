@@ -1,25 +1,25 @@
 #!/bin/bash
 
-AWS_ACCOUNT_ID=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .AWS_ACCOUNT_ID)
-AWS_REGION=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .AWS_REGION)
-CLUSTER_NAME=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .CLUSTER_NAME)
+AWS_ACCOUNT_ID=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .AWS_ACCOUNT_ID)
+AWS_REGION=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .AWS_REGION)
+CLUSTER_NAME=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .CLUSTER_NAME)
 
-FAMILY=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .ReportPortalServices.Family)
-SERVICE_NAME=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .ReportPortalServices.ServiceName)
-TASK_ROLE=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .ReportPortalServices.TaskRole)
-EXECUTION_TASK_ROLE=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .ReportPortalServices.ExecutionTaskRole)
-AWS_LOGS_GROUP=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .ReportPortalServices.AwsLogsGroup)
+FAMILY=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .ReportPortalServices.Family)
+SERVICE_NAME=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .ReportPortalServices.ServiceName)
+TASK_ROLE=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .ReportPortalServices.TaskRole)
+EXECUTION_TASK_ROLE=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .ReportPortalServices.ExecutionTaskRole)
+AWS_LOGS_GROUP=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .ReportPortalServices.AwsLogsGroup)
 
-RABBITMQ_USER_NAME=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .RabbitMQ.UserName)
-RABBITMQ_PASSWORD=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .RabbitMQ.Password)
+RABBITMQ_USER_NAME=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .RabbitMQ.UserName)
+RABBITMQ_PASSWORD=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .RabbitMQ.Password)
 
-DATABASE_HOST=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .Database.Host)
-DATABASE_USER=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .Database.User)
-DATABASE_PASSWORD=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .Database.Password)
-DATABASE_NAME=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .Database.Name)
+DATABASE_HOST=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .Database.Host)
+DATABASE_USER=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .Database.User)
+DATABASE_PASSWORD=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .Database.Password)
+DATABASE_NAME=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .Database.Name)
 
-VOLUME_FILE_SYSTEM_NAME=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .ReportPortalServices.Volume.Name)
-VOLUME_FILE_SYSTEM_ID=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .ReportPortalServices.Volume.FileSystemId)
+VOLUME_FILE_SYSTEM_NAME=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .ReportPortalServices.Volume.Name)
+VOLUME_FILE_SYSTEM_ID=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .ReportPortalServices.Volume.FileSystemId)
 
 
 CONTAINER_DEFINITION=$(jq -n \
@@ -333,16 +333,10 @@ CONTAINER_DEFINITION=$(jq -n \
         },
 
         {
-            "name": "report-portal-service",
+            "name": "analyzer",
             "image": "reportportal/service-auto-analyzer:5.11.0-r1",
             "memory": 1024,
             "cpu": 512,
-            "portMappings": [
-                {
-                    "containerPort": 80,
-                    "hostPort": 80
-                }
-            ],
             "environment": [
                 { "name": "LOGGING_LEVEL", "value": "DEBUG" },
                 { "name": "AMQP_EXCHANGE_NAME", "value": "analyzer-default" },
