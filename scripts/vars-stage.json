@@ -2,13 +2,48 @@
     "AWS_ACCOUNT_ID": "602416750225",
     "AWS_REGION": "us-east-1",
     "CLUSTER_NAME": "playon-shared-qe-services-staging",
+    "LAMBDA_FUNCTION_NAME": "report-portal-index",
     "OpenSearch": {
         "ServiceName": "report-portal-data",
         "Family": "playon-shared-qe-services-staging-report-portal-data",
         "TaskRole": "arn:aws:iam::602416750225:role/playon/ecs/tasks/report-portal-data-tasks-role-staging",
         "ExecutionTaskRole": "arn:aws:iam::602416750225:role/playon/ecs/task-exec/report-portal-data-task-exec-role-staging",
         "AwsLogsGroup": "/aws/ecs/playon-shared-qe-services-staging/report-portal-data/report-portal-data",
-        "FileSystemName": "opensearch",
-        "FileSystemId": "fs-0963c896ae0d9c536"
+        "Volume": {
+            "Name": "opensearch",
+            "FileSystemId": "fs-0963c896ae0d9c536"
+        }
+    },
+    "ReportPortalServices": {
+        "ServiceName": "report-portal-services",
+        "Family": "playon-shared-qe-services-staging-report-portal-services",
+        "TaskRole": "arn:aws:iam::602416750225:role/playon/ecs/tasks/report-portal-service-tasks-role-staging",
+        "ExecutionTaskRole": "arn:aws:iam::602416750225:role/playon/ecs/task-exec/report-portal-service-task-exec-role-staging",
+        "AwsLogsGroup": "/aws/ecs/playon-shared-qe-services-staging/report-portal-service/report-portal-service",
+        "Volume": {
+            "Name"  : "storage",
+            "FileSystemId": "fs-01e464c98cccb9a91"
+        },
+        "RabbitMQ": {
+            "UserName": "rabbitmq",
+            "Password": "rabbitmq"
+        }
+    },
+    "Database": {
+        "Host": "reportportal.cluster-cuke7psrdyq9.us-east-1.rds.amazonaws.com",
+        "User": "rpuser",
+        "Password": "Prpassword1!",
+        "Name": "reportportal"
+    },
+    "Traefik": {
+        "ServiceName": "traefik",
+        "Family": "playon-shared-qe-services-staging-traefik",
+        "TaskRole": "arn:aws:iam::602416750225:role/playon/ecs/tasks/report-portal-service-tasks-role-staging",
+        "ExecutionTaskRole": "arn:aws:iam::602416750225:role/playon/ecs/task-exec/report-portal-service-task-exec-role-staging",
+        "AwsLogsGroup": "/aws/ecs/playon-shared-qe-services-staging/traefik/traefik",
+        "Volume": {
+            "Name": "docker_sock",
+            "FileSystemId": "fs-0429fd80f9237079f"
+        }
     }
 }

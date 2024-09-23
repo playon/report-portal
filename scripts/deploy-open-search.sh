@@ -8,12 +8,12 @@ SERVICE_NAME=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .OpenSearch.Servic
 TASK_ROLE=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .OpenSearch.TaskRole)
 EXECUTION_TASK_ROLE=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .OpenSearch.ExecutionTaskRole)
 AWS_LOGS_GROUP=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .OpenSearch.AwsLogsGroup)
-FILE_SYSTEM_NAME=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .OpenSearch.FileSystemName)
-FILE_SYSTEM_ID=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .OpenSearch.FileSystemId)
+FILE_SYSTEM_NAME=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .OpenSearch.Volume.Name)
+FILE_SYSTEM_ID=$(cat ./scripts/vars-${ENVIRONMENT}.json | jq -r .OpenSearch.Volume.FileSystemId)
 
 CONTAINER_DEFINITION=$(jq -n \
   --arg aws_logs_group "$AWS_LOGS_GROUP" \
-  --arg aws_regoin "$AWS_REGION" \
+  --arg aws_region "$AWS_REGION" \
   '[
         {
         "name": "opensearch",
@@ -22,7 +22,7 @@ CONTAINER_DEFINITION=$(jq -n \
             "logDriver": "awslogs",
             "options": {
                 "awslogs-group": "\($aws_logs_group)",
-                "awslogs-region": "\($aws_regoin)",
+                "awslogs-region": "\($aws_region)",
                 "awslogs-stream-prefix": "ecs"
             }        
         },
@@ -101,5 +101,3 @@ NEW_TASK_DEFINITION=${FAMILY}:${NEW_REVISION}
 aws ecs update-service --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME} --task-definition ${NEW_TASK_DEFINITION} --force-new-deployment --region ${AWS_REGION}
 
 aws ecs wait services-stable --cluster ${CLUSTER_NAME} --services ${SERVICE_NAME} --region ${AWS_REGION}
-
-echo ${NEW_TASK_DEFINITION}

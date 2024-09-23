@@ -24,6 +24,14 @@ jobs:
           name: Deploy OpenSearch
           command: |
             sh ./scripts/deploy-open-search.sh
+      - run:
+          name: Deploy Traefik
+          command: |
+            sh ./scripts/deploy-traefik.sh
+      - run:
+          name: Deploy Report Portal Services
+          command: |
+            sh ./scripts/deploy-report-portal-services.sh
 
 workflows:
 
