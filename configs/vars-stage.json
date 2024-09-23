@@ -45,5 +45,14 @@
             "Name": "docker_sock",
             "FileSystemId": "fs-0429fd80f9237079f"
         }
+    },
+    "Migrations": {
+        "ServiceName": "report-portal-migrations",
+        "Family": "playon-shared-qe-services-staging-report-portal-migrations",
+        "TaskRole": "arn:aws:iam::602416750225:role/playon/ecs/tasks/report-portal-service-tasks-role-staging",
+        "ExecutionTaskRole": "arn:aws:iam::602416750225:role/playon/ecs/task-exec/report-portal-service-task-exec-role-staging",
+        "AwsLogsGroup": "/aws/ecs/playon-shared-qe-services-staging/report-portal-migrations/report-portal-migrations",
+        "Subnet": "subnet-090a05e36d859812e",
+        "SecurityGroup": "sg-074ac17d24f40c011"
     }
 }

@@ -102,8 +102,8 @@ NETWORK_CONFIGURATION=$(jq -n \
     }')
 
 aws ecs run-task \
-    --cluster ${CLUSTER_NAME} \
-    --task-definition ${NEW_TASK_DEFINITION} \
-    --region ${AWS_REGION} \
+    --cluster "${CLUSTER_NAME}" \
+    --task-definition "${NEW_TASK_DEFINITION}" \
+    --region "${AWS_REGION}" \
     --launch-type FARGATE \
     --network-configuration "${NETWORK_CONFIGURATION}"
