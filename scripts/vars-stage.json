@@ -1,0 +1,14 @@
+{
+    "AWS_ACCOUNT_ID": "602416750225",
+    "AWS_REGION": "us-east-1",
+    "CLUSTER_NAME": "playon-shared-qe-services-staging",
+    "OpenSearch": {
+        "ServiceName": "report-portal-data",
+        "Family": "playon-shared-qe-services-staging-report-portal-data",
+        "TaskRole": "arn:aws:iam::602416750225:role/playon/ecs/tasks/report-portal-data-tasks-role-staging",
+        "ExecutionTaskRole": "arn:aws:iam::602416750225:role/playon/ecs/task-exec/report-portal-data-task-exec-role-staging",
+        "AwsLogsGroup": "/aws/ecs/playon-shared-qe-services-staging/report-portal-data/report-portal-data",
+        "FileSystemName": "opensearch",
+        "FileSystemId": "fs-0963c896ae0d9c536"
+    }
+}

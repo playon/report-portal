@@ -1,0 +1,38 @@
+version: 2.1
+
+orbs:
+  aws-cli: circleci/aws-cli@4.1.1
+
+jobs:
+
+  Deploy:
+    parameters:
+      env:
+        type: string
+    machine:
+      image: ubuntu-2004:current
+    resource_class: arm.large
+    steps:
+      - checkout
+      - aws-cli/setup:
+          profile_name: default
+      - run:
+          name: Setup Custom Environment Vars
+          command: |
+            echo 'export ENVIRONMENT="<< parameters.env >>"' >> "$BASH_ENV"
+      - run:
+          name: Deploy OpenSearch
+          command: |
+            sh ./scripts/deploy-open-search.sh
+
+workflows:
+
+  DEPLOY_STAGE:
+    jobs:
+      - Deploy:
+          name: Deploy Report Portal to Stage
+          env: stage
+          context:
+            - PLAYON_SHARED_STAGE_AWS
+
+# VS Code Extension Version: 1.5.1
