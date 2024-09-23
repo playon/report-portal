@@ -95,7 +95,7 @@ NETWORK_CONFIGURATION=$(jq -n \
     --arg security_group "$SECURUTY_GROUP" \
     '{
         "awsvpcConfiguration": {
-            "subnets": ["\($subnet) "],
+            "subnets": ["\($subnet)"],
             "securityGroups": ["\($security_group)"],
             "assignPublicIp": "DISABLED"
         }
