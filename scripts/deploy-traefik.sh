@@ -18,6 +18,7 @@ CONTAINER_DEFINITION=$(jq -n \
   --arg aws_logs_group "$AWS_LOGS_GROUP" \
   --arg aws_region "$AWS_REGION" \
   --arg cluster_name "$CLUSTER_NAME" \
+  --arg file_system_name "$FILE_SYSTEM_NAME" \
   '[
         {
             "name": "traefik",
@@ -52,7 +53,7 @@ CONTAINER_DEFINITION=$(jq -n \
             },
             "mountPoints": [
                 {
-                    "sourceVolume": "docker_sock",
+                    "sourceVolume": "\($file_system_name)",
                     "containerPath": "/var/run/docker.sock"
                 }
             ],
