@@ -11,7 +11,7 @@ jobs:
         type: string
     machine:
       image: ubuntu-2004:current
-    resource_class: arm.large
+    resource_class: arm.medium
     steps:
       - checkout
       - aws-cli/setup:
@@ -29,13 +29,21 @@ jobs:
           command: |
             sh ./scripts/run-migrations.sh
       - run:
+          name: Deploy RabbitMQ
+          command: |
+            sh ./scripts/deploy-rabbitmq.sh
+      - run:
           name: Deploy Traefik
           command: |
             sh ./scripts/deploy-traefik.sh
       - run:
-          name: Deploy Report Portal Services
+          name: Deploy Report Portal Core Services
           command: |
             sh ./scripts/deploy-report-portal-services.sh
+      - run:
+          name: Deploy Report Portal Metrics Gatherer
+          command: |
+            sh ./scripts/deploy-metrics-gatherer.sh
 
 workflows:
 

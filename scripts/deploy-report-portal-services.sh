@@ -36,46 +36,6 @@ CONTAINER_DEFINITION=$(jq -n \
     --arg volume_file_system_name "$VOLUME_FILE_SYSTEM_NAME" \
     '[
         {
-            "name": "rabbitmq",
-            "image": "bitnami/rabbitmq:3.13.7-debian-12-r2",
-            "memory": 1024,
-            "cpu": 512,
-            "logConfiguration": {
-                "logDriver": "awslogs",
-                "options": {
-                    "awslogs-group": "\($aws_logs_group)",
-                    "awslogs-region": "\($aws_region)",
-                    "awslogs-stream-prefix": "ecs"
-                }        
-            },
-            "environment": [
-                {
-                    "name": "RABBITMQ_DEFAULT_USER",
-                    "value": "\($rabbitmq_user_name)"
-                },
-                {
-                    "name": "RABBITMQ_DEFAULT_PASS",
-                    "value": "\($rabbitmq_password)"
-                },
-                {
-                    "name": "RABBITMQ_MANAGEMENT_ALLOW_WEB_ACCESS",
-                    "value": "true"
-                },
-                {
-                    "name": "RABBITMQ_PLUGINS",
-                    "value": "rabbitmq_consistent_hash_exchange, rabbitmq_management, rabbitmq_auth_backend_ldap"
-                }
-            ],
-            "healthCheck": {
-                "command": ["CMD", "rabbitmqctl", "status"],
-                "interval": 30,
-                "timeout": 30,
-                "retries": 5
-            },
-            "essential": true
-        },
-
-        {
             "name": "ui",
             "image": "reportportal/service-ui:5.12.0",
             "memory": 512,
@@ -132,7 +92,7 @@ CONTAINER_DEFINITION=$(jq -n \
                 { "name": "RP_DB_PORT", "value": "\($database_port)" },
                 { "name": "RP_DB_PASS", "value": "\($database_password)" },
                 { "name": "RP_DB_NAME", "value": "\($database_name)" },
-                { "name": "RP_AMQP_HOST", "value": "0.0.0.0" },
+                { "name": "RP_AMQP_HOST", "value": "rabbitmq" },
                 { "name": "RP_AMQP_PORT", "value": "5672" },
                 { "name": "RP_AMQP_APIPORT", "value": "15672" },
                 { "name": "RP_AMQP_USER", "value": "\($rabbitmq_user_name)" },
@@ -191,13 +151,7 @@ CONTAINER_DEFINITION=$(jq -n \
                     "awslogs-region": "\($aws_region)",
                     "awslogs-stream-prefix": "ecs"
                 }        
-            },
-            "dependsOn": [
-                {
-                    "containerName": "rabbitmq",
-                    "condition": "HEALTHY"
-                }
-            ]
+            }
         },
 
         {
@@ -218,7 +172,7 @@ CONTAINER_DEFINITION=$(jq -n \
                 { "name": "RP_DB_PORT", "value": "\($database_port)" },
                 { "name": "RP_DB_PASS", "value": "\($database_password)" },
                 { "name": "RP_DB_NAME", "value": "\($database_name)" },
-                { "name": "RP_AMQP_HOST", "value": "0.0.0.0" },
+                { "name": "RP_AMQP_HOST", "value": "rabbitmq" },
                 { "name": "RP_AMQP_PORT", "value": "5672" },
                 { "name": "RP_AMQP_APIPORT", "value": "15672" },
                 { "name": "RP_AMQP_USER", "value": "\($rabbitmq_user_name)" },
@@ -264,13 +218,7 @@ CONTAINER_DEFINITION=$(jq -n \
                     "awslogs-region": "\($aws_region)",
                     "awslogs-stream-prefix": "ecs"
                 }        
-            },
-            "dependsOn": [
-                {
-                    "containerName": "rabbitmq",
-                    "condition": "HEALTHY"
-                }
-            ]
+            }
         },
 
         {
@@ -291,7 +239,7 @@ CONTAINER_DEFINITION=$(jq -n \
                 { "name": "RP_DB_PORT", "value": "\($database_port)" },
                 { "name": "RP_DB_PASS", "value": "\($database_password)" },
                 { "name": "RP_DB_NAME", "value": "\($database_name)" },
-                { "name": "RP_AMQP_HOST", "value": "0.0.0.0" },
+                { "name": "RP_AMQP_HOST", "value": "rabbitmq" },
                 { "name": "RP_AMQP_PORT", "value": "5672" },
                 { "name": "RP_AMQP_APIPORT", "value": "15672" },
                 { "name": "RP_AMQP_USER", "value": "\($rabbitmq_user_name)" },
@@ -340,13 +288,7 @@ CONTAINER_DEFINITION=$(jq -n \
                     "awslogs-region": "\($aws_region)",
                     "awslogs-stream-prefix": "ecs"
                 }        
-            },
-            "dependsOn": [
-                {
-                    "containerName": "rabbitmq",
-                    "condition": "HEALTHY"
-                }
-            ]
+            }
         },
 
         {
@@ -358,9 +300,10 @@ CONTAINER_DEFINITION=$(jq -n \
                 { "name": "LOGGING_LEVEL", "value": "DEBUG" },
                 { "name": "AMQP_EXCHANGE_NAME", "value": "analyzer-default" },
                 { "name": "AMQP_VIRTUAL_HOST", "value": "analyzer" },
-                { "name": "AMQP_URL", "value": "amqp://\($rabbitmq_user_name):\($rabbitmq_password)@0.0.0.0:5672" },
+                { "name": "AMQP_URL", "value": "amqp://\($rabbitmq_user_name):\($rabbitmq_password)@rabbitmq:5672" },
                 { "name": "ES_HOSTS", "value": "http://opensearch:9200" },
-                { "name": "ANALYZER_BINARYSTORE_TYPE", "value": "filesystem" }
+                { "name": "ANALYZER_BINARYSTORE_TYPE", "value": "filesystem" },
+                { "name": "UWSGI_WORKERS", "value": "2" }
             ],
             "mountPoints": [
                 {
@@ -375,14 +318,40 @@ CONTAINER_DEFINITION=$(jq -n \
                     "awslogs-region": "\($aws_region)",
                     "awslogs-stream-prefix": "ecs"
                 }        
-            },
-            "dependsOn": [
-                {
-                    "containerName": "rabbitmq",
-                    "condition": "HEALTHY"
-                }
-            ]
+            }
         }
+
+        # {
+        #     "name": "analyzer-train",
+        #     "image": "reportportal/service-auto-analyzer:5.12.0-r1",
+        #     "memory": 1024,
+        #     "cpu": 512,
+        #     "environment": [
+        #         { "name": "LOGGING_LEVEL", "value": "DEBUG" },
+        #         { "name": "AMQP_EXCHANGE_NAME", "value": "analyzer-default" },
+        #         { "name": "AMQP_VIRTUAL_HOST", "value": "analyzer" },
+        #         { "name": "AMQP_URL", "value": "amqp://\($rabbitmq_user_name):\($rabbitmq_password)@rabbitmq:5672" },
+        #         { "name": "ES_HOSTS", "value": "http://opensearch:9200" },
+        #         { "name": "INSTANCE_TASK_TYPE", "value": "train" },
+        #         { "name": "UWSGI_WORKERS", "value": "1" },
+        #         { "name": "ANALYZER_BINARYSTORE_TYPE", "value": "filesystem" },
+        #         { "name": "ANALYZER_HTTP_PORT", "value": "4859" }
+        #     ],
+        #     "mountPoints": [
+        #         {
+        #             "sourceVolume": "\($volume_file_system_name)",
+        #             "containerPath": "/data/storage"
+        #         }
+        #     ],
+        #     "logConfiguration": {
+        #         "logDriver": "awslogs",
+        #         "options": {
+        #             "awslogs-group": "\($aws_logs_group)",
+        #             "awslogs-region": "\($aws_region)",
+        #             "awslogs-stream-prefix": "ecs"
+        #         }        
+        #     }
+        # }
     ]')
 
 VOLUMES=$(jq -n \
