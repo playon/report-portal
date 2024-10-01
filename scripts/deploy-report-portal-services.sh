@@ -36,8 +36,8 @@ CONTAINER_DEFINITION=$(jq -n \
         {
             "name": "rabbitmq",
             "image": "bitnami/rabbitmq:3.13.3-debian-12-r0",
-            "memory": 512,
-            "cpu": 256,
+            "memory": 1024,
+            "cpu": 512,
             "logConfiguration": {
                 "logDriver": "awslogs",
                 "options": {
@@ -134,7 +134,7 @@ CONTAINER_DEFINITION=$(jq -n \
                 { "name": "RP_AMQP_ANALYZER-VHOST", "value": "analyzer" },
                 { "name": "DATASTORE_TYPE", "value": "filesystem" },
                 { "name": "LOGGING_LEVEL_ORG_HIBERNATE_SQL", "value": "info" },
-                { "name": "RP_REQUESTLOGGING", "value": "false" },
+                { "name": "RP_REQUESTLOGGING", "value": "true" },
                 { "name": "AUDIT_LOGGER", "value": "OFF" },
                 { "name": "MANAGEMENT_HEALTH_ELASTICSEARCH_ENABLED", "value": "false" },
                 { "name": "RP_ENVIRONMENT_VARIABLE_ALLOW_DELETE_ACCOUNT", "value": "false" },
@@ -335,14 +335,14 @@ CONTAINER_DEFINITION=$(jq -n \
         {
             "name": "analyzer",
             "image": "reportportal/service-auto-analyzer:5.11.0-r1",
-            "memory": 1024,
-            "cpu": 512,
+            "memory": 2048,
+            "cpu": 1024,
             "environment": [
                 { "name": "LOGGING_LEVEL", "value": "DEBUG" },
                 { "name": "AMQP_EXCHANGE_NAME", "value": "analyzer-default" },
                 { "name": "AMQP_VIRTUAL_HOST", "value": "analyzer" },
                 { "name": "AMQP_URL", "value": "amqp://\($rabbitmq_user_name):\($rabbitmq_password)@0.0.0.0:5672" },
-                { "name": "ES_HOSTS", "value": "http://0.0.0.0:9200" },
+                { "name": "ES_HOSTS", "value": "http://opensearch:9200" },
                 { "name": "ANALYZER_BINARYSTORE_TYPE", "value": "filesystem" }
             ],
             "mountPoints": [

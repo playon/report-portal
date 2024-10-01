@@ -6,9 +6,9 @@
     "OpenSearch": {
         "ServiceName": "report-portal-data",
         "Family": "playon-shared-qe-services-staging-report-portal-data",
-        "TaskRole": "arn:aws:iam::602416750225:role/playon/ecs/tasks/report-portal-data-tasks-role-staging",
-        "ExecutionTaskRole": "arn:aws:iam::602416750225:role/playon/ecs/task-exec/report-portal-data-task-exec-role-staging",
-        "AwsLogsGroup": "/aws/ecs/playon-shared-qe-services-staging/report-portal-data/report-portal-data",
+        "TaskRole": "arn:aws:iam::602416750225:role/playon/ecs/tasks/report-portal-service-tasks-role-staging",
+        "ExecutionTaskRole": "arn:aws:iam::602416750225:role/playon/ecs/task-exec/report-portal-service-task-exec-role-staging",
+        "AwsLogsGroup": "/aws/ecs/playon-shared-qe-services-staging/report-portal-data/",
         "Volume": {
             "Name": "opensearch",
             "FileSystemId": "fs-0963c896ae0d9c536"
@@ -19,7 +19,7 @@
         "Family": "playon-shared-qe-services-staging-report-portal-services",
         "TaskRole": "arn:aws:iam::602416750225:role/playon/ecs/tasks/report-portal-service-tasks-role-staging",
         "ExecutionTaskRole": "arn:aws:iam::602416750225:role/playon/ecs/task-exec/report-portal-service-task-exec-role-staging",
-        "AwsLogsGroup": "/aws/ecs/playon-shared-qe-services-staging/report-portal-service/report-portal-service",
+        "AwsLogsGroup": "/aws/ecs/playon-shared-qe-services-staging/report-portal-data/",
         "Volume": {
             "Name"  : "storage",
             "FileSystemId": "fs-01e464c98cccb9a91"

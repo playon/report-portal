@@ -54,7 +54,7 @@ CONTAINER_DEFINITION=$(jq -n \
                 },
                 {
                     "name": "OS_HOST",
-                    "value": "0.0.0.0"
+                    "value": "opensearch"
                 },
                 {
                     "name": "OS_PORT",
@@ -81,8 +81,8 @@ aws ecs register-task-definition \
     --region "${AWS_REGION}" \
     --network-mode awsvpc \
     --requires-compatibilities FARGATE \
-    --memory 1024 \
-    --cpu 512 \
+    --memory 512 \
+    --cpu 256 \
     --task-role-arn "${TASK_ROLE}" \
     --execution-role-arn "${EXECUTION_TASK_ROLE}" \
     --container-definitions "${CONTAINER_DEFINITION}" > ./open_search_register_task_definition_output.json
@@ -90,20 +90,12 @@ aws ecs register-task-definition \
 NEW_REVISION=$(cat ./open_search_register_task_definition_output.json | jq  '.taskDefinition.revision')
 NEW_TASK_DEFINITION=${FAMILY}:${NEW_REVISION}
 
-NETWORK_CONFIGURATION=$(jq -n \
-    --arg subnet "$SUBNET" \
-    --arg security_group "$SECURUTY_GROUP" \
-    '{
-        "awsvpcConfiguration": {
-            "subnets": ["\($subnet)"],
-            "securityGroups": ["\($security_group)"],
-            "assignPublicIp": "DISABLED"
-        }
-    }')
+aws ecs update-service --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME} --task-definition ${NEW_TASK_DEFINITION} --force-new-deployment --region ${AWS_REGION}
 
-aws ecs run-task \
-    --cluster "${CLUSTER_NAME}" \
-    --task-definition "${NEW_TASK_DEFINITION}" \
-    --region "${AWS_REGION}" \
-    --launch-type FARGATE \
-    --network-configuration "${NETWORK_CONFIGURATION}"
+aws ecs wait services-stable --cluster ${CLUSTER_NAME} --services ${SERVICE_NAME} --region ${AWS_REGION}
+
+aws ecs update-service \
+  --cluster ${CLUSTER_NAME} \
+  --service ${SERVICE_NAME} \
+  --region ${AWS_REGION} \
+  --desired-count 0

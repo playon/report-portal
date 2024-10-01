@@ -12,9 +12,9 @@ FILE_SYSTEM_NAME=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .OpenSearch.Vo
 FILE_SYSTEM_ID=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .OpenSearch.Volume.FileSystemId)
 
 CONTAINER_DEFINITION=$(jq -n \
-  --arg aws_logs_group "$AWS_LOGS_GROUP" \
-  --arg aws_region "$AWS_REGION" \
-  '[
+    --arg aws_logs_group "$AWS_LOGS_GROUP" \
+    --arg aws_region "$AWS_REGION" \
+    '[
         {
         "name": "opensearch",
         "image": "opensearchproject/opensearch:2.14.0",
@@ -56,6 +56,7 @@ CONTAINER_DEFINITION=$(jq -n \
         },
         "portMappings": [
             {
+                "name": "opensearch-port",
                 "containerPort": 9200,
                 "hostPort": 9200,
                 "protocol": "tcp"
