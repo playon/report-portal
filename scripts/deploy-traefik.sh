@@ -22,7 +22,7 @@ CONTAINER_DEFINITION=$(jq -n \
   '[
         {
             "name": "traefik",
-            "image": "traefik:v2.4",
+            "image": "traefik:v2.11.2",
             "memory": 1024,
             "cpu": 512,
             "essential": true,

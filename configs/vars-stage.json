@@ -31,6 +31,7 @@
     },
     "Database": {
         "Host": "reportportal.cluster-cuke7psrdyq9.us-east-1.rds.amazonaws.com",
+        "Port": "5432",
         "User": "rpuser",
         "Password": "Prpassword1!",
         "Name": "reportportal"

@@ -28,7 +28,7 @@ CONTAINER_DEFINITION=$(jq -n \
     '[
         {
             "name": "migrations",
-            "image": "reportportal/migrations:5.11.1",
+            "image": "reportportal/migrations:5.12.1",
             "memory": 512,
             "cpu": 256,
             "environment": [
@@ -90,12 +90,21 @@ aws ecs register-task-definition \
 NEW_REVISION=$(cat ./open_search_register_task_definition_output.json | jq  '.taskDefinition.revision')
 NEW_TASK_DEFINITION=${FAMILY}:${NEW_REVISION}
 
-aws ecs update-service --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME} --task-definition ${NEW_TASK_DEFINITION} --force-new-deployment --region ${AWS_REGION}
+aws ecs update-service \
+    --cluster ${CLUSTER_NAME} \
+    --service ${SERVICE_NAME} \
+    --task-definition ${NEW_TASK_DEFINITION} \
+    --force-new-deployment \
+    --region ${AWS_REGION} \
+    --desired-count 1
 
-aws ecs wait services-stable --cluster ${CLUSTER_NAME} --services ${SERVICE_NAME} --region ${AWS_REGION}
+aws ecs wait services-stable \
+    --cluster ${CLUSTER_NAME} \
+    --services ${SERVICE_NAME} \
+    --region ${AWS_REGION}
 
 aws ecs update-service \
-  --cluster ${CLUSTER_NAME} \
-  --service ${SERVICE_NAME} \
-  --region ${AWS_REGION} \
-  --desired-count 0
+    --cluster ${CLUSTER_NAME} \
+    --service ${SERVICE_NAME} \
+    --region ${AWS_REGION} \
+    --desired-count 0

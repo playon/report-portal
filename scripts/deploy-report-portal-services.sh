@@ -14,6 +14,7 @@ RABBITMQ_USER_NAME=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .RabbitMQ.Us
 RABBITMQ_PASSWORD=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .RabbitMQ.Password)
 
 DATABASE_HOST=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .Database.Host)
+DATABASE_PORT=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .Database.Port)
 DATABASE_USER=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .Database.User)
 DATABASE_PASSWORD=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .Database.Password)
 DATABASE_NAME=$(cat ./configs/vars-${ENVIRONMENT}.json | jq -r .Database.Name)
@@ -28,6 +29,7 @@ CONTAINER_DEFINITION=$(jq -n \
     --arg rabbitmq_user_name "$RABBITMQ_USER_NAME" \
     --arg rabbitmq_password "$RABBITMQ_PASSWORD" \
     --arg database_host "$DATABASE_HOST" \
+    --arg database_port "$DATABASE_PORT" \
     --arg database_user "$DATABASE_USER" \
     --arg database_password "$DATABASE_PASSWORD" \
     --arg database_name "$DATABASE_NAME" \
@@ -35,7 +37,7 @@ CONTAINER_DEFINITION=$(jq -n \
     '[
         {
             "name": "rabbitmq",
-            "image": "bitnami/rabbitmq:3.13.3-debian-12-r0",
+            "image": "bitnami/rabbitmq:3.13.7-debian-12-r2",
             "memory": 1024,
             "cpu": 512,
             "logConfiguration": {
@@ -58,6 +60,10 @@ CONTAINER_DEFINITION=$(jq -n \
                 {
                     "name": "RABBITMQ_MANAGEMENT_ALLOW_WEB_ACCESS",
                     "value": "true"
+                },
+                {
+                    "name": "RABBITMQ_PLUGINS",
+                    "value": "rabbitmq_consistent_hash_exchange, rabbitmq_management, rabbitmq_auth_backend_ldap"
                 }
             ],
             "healthCheck": {
@@ -71,7 +77,7 @@ CONTAINER_DEFINITION=$(jq -n \
 
         {
             "name": "ui",
-            "image": "reportportal/service-ui:5.11.1",
+            "image": "reportportal/service-ui:5.12.0",
             "memory": 512,
             "cpu": 256,
             "logConfiguration": {
@@ -110,7 +116,7 @@ CONTAINER_DEFINITION=$(jq -n \
 
         {
             "name": "api",
-            "image": "reportportal/service-api:5.11.1",
+            "image": "reportportal/service-api:5.12.0",
             "memory": 1024,
             "cpu": 512,
             "portMappings": [
@@ -123,10 +129,12 @@ CONTAINER_DEFINITION=$(jq -n \
             "environment": [
                 { "name": "RP_DB_HOST", "value": "\($database_host)" },
                 { "name": "RP_DB_USER", "value": "\($database_user)" },
+                { "name": "RP_DB_PORT", "value": "\($database_port)" },
                 { "name": "RP_DB_PASS", "value": "\($database_password)" },
                 { "name": "RP_DB_NAME", "value": "\($database_name)" },
                 { "name": "RP_AMQP_HOST", "value": "0.0.0.0" },
                 { "name": "RP_AMQP_PORT", "value": "5672" },
+                { "name": "RP_AMQP_APIPORT", "value": "15672" },
                 { "name": "RP_AMQP_USER", "value": "\($rabbitmq_user_name)" },
                 { "name": "RP_AMQP_PASS", "value": "\($rabbitmq_password)" },
                 { "name": "RP_AMQP_APIUSER", "value": "\($rabbitmq_user_name)" },
@@ -143,7 +151,12 @@ CONTAINER_DEFINITION=$(jq -n \
                 { "name": "RP_ENVIRONMENT_VARIABLE_PATTERN-ANALYSIS_BATCH-SIZE", "value": "100" },
                 { "name": "RP_ENVIRONMENT_VARIABLE_PATTERN-ANALYSIS_PREFETCH-COUNT", "value": "1" },
                 { "name": "RP_ENVIRONMENT_VARIABLE_PATTERN-ANALYSIS_CONSUMERS-COUNT", "value": "1" },
-                { "name": "JAVA_OPTS", "value": "-Xmx1g -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp -Dcom.sun.management.jmxremote.rmi.port=12349 -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.port=9010 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=0.0.0.0" }
+                { "name": "JAVA_OPTS", "value": "-Xmx1g -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp -Dcom.sun.management.jmxremote.rmi.port=12349 -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.port=9010 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=0.0.0.0" },
+                { "name": "COM_TA_REPORTPORTAL_JOB_LOAD_PLUGINS_CRON", "value": "PT10S" },
+                { "name": "COM_TA_REPORTPORTAL_JOB_CLEAN_OUTDATED_PLUGINS_CRON", "value": "PT10S" },
+                { "name": "REPORTING_QUEUES_COUNT", "value": "10" },
+                { "name": "REPORTING_CONSUMER_PREFETCHCOUNT", "value": "10" },
+                { "name": "REPORTING_PARKINGLOT_TTL_DAYS", "value": "7" }
             ],
             "dockerLabels": {
                 "traefik.enable": "true",
@@ -189,7 +202,7 @@ CONTAINER_DEFINITION=$(jq -n \
 
         {
             "name": "uat",
-            "image": "reportportal/service-authorization:5.11.1",
+            "image": "reportportal/service-authorization:5.12.0",
             "memory": 1024,
             "cpu": 512,
             "portMappings": [
@@ -202,10 +215,12 @@ CONTAINER_DEFINITION=$(jq -n \
             "environment": [
                 { "name": "RP_DB_HOST", "value": "\($database_host)" },
                 { "name": "RP_DB_USER", "value": "\($database_user)" },
+                { "name": "RP_DB_PORT", "value": "\($database_port)" },
                 { "name": "RP_DB_PASS", "value": "\($database_password)" },
                 { "name": "RP_DB_NAME", "value": "\($database_name)" },
                 { "name": "RP_AMQP_HOST", "value": "0.0.0.0" },
                 { "name": "RP_AMQP_PORT", "value": "5672" },
+                { "name": "RP_AMQP_APIPORT", "value": "15672" },
                 { "name": "RP_AMQP_USER", "value": "\($rabbitmq_user_name)" },
                 { "name": "RP_AMQP_PASS", "value": "\($rabbitmq_password)" },
                 { "name": "RP_AMQP_APIUSER", "value": "\($rabbitmq_user_name)" },
@@ -214,7 +229,7 @@ CONTAINER_DEFINITION=$(jq -n \
                 { "name": "RP_SESSION_LIVE", "value": "86400" },
                 { "name": "RP_SAML_SESSION-LIVE", "value": "4320" },
                 { "name": "RP_INITIAL_ADMIN_PASSWORD", "value": "erebus" },
-                { "name": "JAVA_OPTS", "value": "-Djava.security.egd=file:/dev/./urandom -XX:MinRAMPercentage=60.0 -XX:MaxRAMPercentage=90.0" }
+                { "name": "JAVA_OPTS", "value": "-Djava.security.egd=file:/dev/./urandom -XX:MinRAMPercentage=60.0 -XX:MaxRAMPercentage=90.0 --add-opens=java.base/java.lang=ALL-UNNAMED" }
             ],
             "dockerLabels": {
                 "traefik.enable": "true",
@@ -260,7 +275,7 @@ CONTAINER_DEFINITION=$(jq -n \
 
         {
             "name": "jobs",
-            "image": "reportportal/service-jobs:5.11.1",
+            "image": "reportportal/service-jobs:5.12.0",
             "memory": 1024,
             "cpu": 512,
             "portMappings": [
@@ -273,10 +288,12 @@ CONTAINER_DEFINITION=$(jq -n \
             "environment": [
                 { "name": "RP_DB_HOST", "value": "\($database_host)" },
                 { "name": "RP_DB_USER", "value": "\($database_user)" },
+                { "name": "RP_DB_PORT", "value": "\($database_port)" },
                 { "name": "RP_DB_PASS", "value": "\($database_password)" },
                 { "name": "RP_DB_NAME", "value": "\($database_name)" },
                 { "name": "RP_AMQP_HOST", "value": "0.0.0.0" },
                 { "name": "RP_AMQP_PORT", "value": "5672" },
+                { "name": "RP_AMQP_APIPORT", "value": "15672" },
                 { "name": "RP_AMQP_USER", "value": "\($rabbitmq_user_name)" },
                 { "name": "RP_AMQP_PASS", "value": "\($rabbitmq_password)" },
                 { "name": "RP_AMQP_APIUSER", "value": "\($rabbitmq_user_name)" },
@@ -334,7 +351,7 @@ CONTAINER_DEFINITION=$(jq -n \
 
         {
             "name": "analyzer",
-            "image": "reportportal/service-auto-analyzer:5.11.0-r1",
+            "image": "reportportal/service-auto-analyzer:5.12.0-r1",
             "memory": 2048,
             "cpu": 1024,
             "environment": [

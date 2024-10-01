@@ -17,7 +17,7 @@ CONTAINER_DEFINITION=$(jq -n \
     '[
         {
         "name": "opensearch",
-        "image": "opensearchproject/opensearch:2.14.0",
+        "image": "opensearchproject/opensearch:2.16.0",
         "logConfiguration": {
             "logDriver": "awslogs",
             "options": {
