@@ -67,5 +67,12 @@
         "AwsLogsGroup": "/aws/ecs/playon-shared-qe-services-staging/report-portal-rabbitmq/report-portal-rabbitmq",
         "UserName": "rabbitmq",
         "Password": "rabbitmq"
+    },
+    "AnalyzerTrain": {
+        "ServiceName": "report-portal-analyzer-train",
+        "Family": "playon-shared-qe-services-staging-report-portal-analyzer-train",
+        "TaskRole": "arn:aws:iam::602416750225:role/playon/ecs/tasks/report-portal-service-tasks-role-staging",
+        "ExecutionTaskRole": "arn:aws:iam::602416750225:role/playon/ecs/task-exec/report-portal-service-task-exec-role-staging",
+        "AwsLogsGroup": "/aws/ecs/playon-shared-qe-services-staging/report-portal-analyzer-train/"
     }
 }

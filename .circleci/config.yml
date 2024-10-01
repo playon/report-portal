@@ -44,6 +44,10 @@ jobs:
           name: Deploy Report Portal Metrics Gatherer
           command: |
             sh ./scripts/deploy-metrics-gatherer.sh
+      - run:
+          name: Deploy Report Portal Analyzer Train
+          command: |
+            sh ./scripts/deploy-analyzer-train.sh
 
 workflows:
 

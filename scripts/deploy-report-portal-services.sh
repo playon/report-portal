@@ -302,8 +302,7 @@ CONTAINER_DEFINITION=$(jq -n \
                 { "name": "AMQP_VIRTUAL_HOST", "value": "analyzer" },
                 { "name": "AMQP_URL", "value": "amqp://\($rabbitmq_user_name):\($rabbitmq_password)@rabbitmq:5672" },
                 { "name": "ES_HOSTS", "value": "http://opensearch:9200" },
-                { "name": "ANALYZER_BINARYSTORE_TYPE", "value": "filesystem" },
-                { "name": "UWSGI_WORKERS", "value": "2" }
+                { "name": "ANALYZER_BINARYSTORE_TYPE", "value": "filesystem" }
             ],
             "mountPoints": [
                 {
@@ -320,38 +319,6 @@ CONTAINER_DEFINITION=$(jq -n \
                 }        
             }
         }
-
-        # {
-        #     "name": "analyzer-train",
-        #     "image": "reportportal/service-auto-analyzer:5.12.0-r1",
-        #     "memory": 1024,
-        #     "cpu": 512,
-        #     "environment": [
-        #         { "name": "LOGGING_LEVEL", "value": "DEBUG" },
-        #         { "name": "AMQP_EXCHANGE_NAME", "value": "analyzer-default" },
-        #         { "name": "AMQP_VIRTUAL_HOST", "value": "analyzer" },
-        #         { "name": "AMQP_URL", "value": "amqp://\($rabbitmq_user_name):\($rabbitmq_password)@rabbitmq:5672" },
-        #         { "name": "ES_HOSTS", "value": "http://opensearch:9200" },
-        #         { "name": "INSTANCE_TASK_TYPE", "value": "train" },
-        #         { "name": "UWSGI_WORKERS", "value": "1" },
-        #         { "name": "ANALYZER_BINARYSTORE_TYPE", "value": "filesystem" },
-        #         { "name": "ANALYZER_HTTP_PORT", "value": "4859" }
-        #     ],
-        #     "mountPoints": [
-        #         {
-        #             "sourceVolume": "\($volume_file_system_name)",
-        #             "containerPath": "/data/storage"
-        #         }
-        #     ],
-        #     "logConfiguration": {
-        #         "logDriver": "awslogs",
-        #         "options": {
-        #             "awslogs-group": "\($aws_logs_group)",
-        #             "awslogs-region": "\($aws_region)",
-        #             "awslogs-stream-prefix": "ecs"
-        #         }        
-        #     }
-        # }
     ]')
 
 VOLUMES=$(jq -n \
