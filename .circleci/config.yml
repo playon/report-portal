@@ -1,0 +1,61 @@
+version: 2.1
+
+orbs:
+  aws-cli: circleci/aws-cli@4.1.1
+
+jobs:
+
+  Deploy:
+    parameters:
+      env:
+        type: string
+    machine:
+      image: ubuntu-2004:current
+    resource_class: arm.medium
+    steps:
+      - checkout
+      - aws-cli/setup:
+          profile_name: default
+      - run:
+          name: Setup Custom Environment Vars
+          command: |
+            echo 'export ENVIRONMENT="<< parameters.env >>"' >> "$BASH_ENV"
+      - run:
+          name: Deploy OpenSearch
+          command: |
+            sh ./scripts/deploy-open-search.sh
+      - run:
+          name: Update the Database Schema and Generate an Index Template for OpenSearch
+          command: |
+            sh ./scripts/run-migrations.sh
+      - run:
+          name: Deploy RabbitMQ
+          command: |
+            sh ./scripts/deploy-rabbitmq.sh
+      - run:
+          name: Deploy Traefik
+          command: |
+            sh ./scripts/deploy-traefik.sh
+      - run:
+          name: Deploy Report Portal Core Services
+          command: |
+            sh ./scripts/deploy-report-portal-services.sh
+      - run:
+          name: Deploy Report Portal Metrics Gatherer
+          command: |
+            sh ./scripts/deploy-metrics-gatherer.sh
+      - run:
+          name: Deploy Report Portal Analyzer Train
+          command: |
+            sh ./scripts/deploy-analyzer-train.sh
+
+workflows:
+
+  DEPLOY_STAGE:
+    jobs:
+      - Deploy:
+          name: Deploy Report Portal to Stage
+          env: stage
+          context:
+            - PLAYON_SHARED_STAGE_AWS
+

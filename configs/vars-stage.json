@@ -1,0 +1,78 @@
+{
+    "AWS_ACCOUNT_ID": "602416750225",
+    "AWS_REGION": "us-east-1",
+    "CLUSTER_NAME": "playon-shared-qe-services-staging",
+    "LAMBDA_FUNCTION_NAME": "report-portal-index",
+    "OpenSearch": {
+        "ServiceName": "report-portal-data",
+        "Family": "playon-shared-qe-services-staging-report-portal-data",
+        "TaskRole": "arn:aws:iam::602416750225:role/playon/ecs/tasks/report-portal-service-tasks-role-staging",
+        "ExecutionTaskRole": "arn:aws:iam::602416750225:role/playon/ecs/task-exec/report-portal-service-task-exec-role-staging",
+        "AwsLogsGroup": "/aws/ecs/playon-shared-qe-services-staging/report-portal-data/",
+        "Volume": {
+            "Name": "opensearch",
+            "FileSystemId": "fs-0963c896ae0d9c536"
+        }
+    },
+    "ReportPortalServices": {
+        "ServiceName": "report-portal-services",
+        "Family": "playon-shared-qe-services-staging-report-portal-services",
+        "TaskRole": "arn:aws:iam::602416750225:role/playon/ecs/tasks/report-portal-service-tasks-role-staging",
+        "ExecutionTaskRole": "arn:aws:iam::602416750225:role/playon/ecs/task-exec/report-portal-service-task-exec-role-staging",
+        "AwsLogsGroup": "/aws/ecs/playon-shared-qe-services-staging/report-portal-data/",
+        "Volume": {
+            "Name"  : "storage",
+            "FileSystemId": "fs-01e464c98cccb9a91"
+        }
+    },
+    "Database": {
+        "Host": "reportportal.cluster-cuke7psrdyq9.us-east-1.rds.amazonaws.com",
+        "Port": "5432",
+        "User": "rpuser",
+        "Password": "Prpassword1!",
+        "Name": "reportportal"
+    },
+    "Traefik": {
+        "ServiceName": "traefik",
+        "Family": "playon-shared-qe-services-staging-traefik",
+        "TaskRole": "arn:aws:iam::602416750225:role/playon/ecs/tasks/report-portal-service-tasks-role-staging",
+        "ExecutionTaskRole": "arn:aws:iam::602416750225:role/playon/ecs/task-exec/report-portal-service-task-exec-role-staging",
+        "AwsLogsGroup": "/aws/ecs/playon-shared-qe-services-staging/traefik/traefik",
+        "Volume": {
+            "Name": "docker_sock",
+            "FileSystemId": "fs-0429fd80f9237079f"
+        }
+    },
+    "Migrations": {
+        "ServiceName": "report-portal-migrations",
+        "Family": "playon-shared-qe-services-staging-report-portal-migrations",
+        "TaskRole": "arn:aws:iam::602416750225:role/playon/ecs/tasks/report-portal-service-tasks-role-staging",
+        "ExecutionTaskRole": "arn:aws:iam::602416750225:role/playon/ecs/task-exec/report-portal-service-task-exec-role-staging",
+        "AwsLogsGroup": "/aws/ecs/playon-shared-qe-services-staging/report-portal-migrations/report-portal-migrations",
+        "Subnet": "subnet-090a05e36d859812e",
+        "SecurityGroup": "sg-074ac17d24f40c011"
+    },
+    "MetricsGatherer": {
+        "ServiceName": "report-portal-metrics-gatherer",
+        "Family": "playon-shared-qe-services-staging-report-portal-metrics-gatherer",
+        "TaskRole": "arn:aws:iam::602416750225:role/playon/ecs/tasks/report-portal-service-tasks-role-staging",
+        "ExecutionTaskRole": "arn:aws:iam::602416750225:role/playon/ecs/task-exec/report-portal-service-task-exec-role-staging",
+        "AwsLogsGroup": "/aws/ecs/playon-shared-qe-services-staging/report-portal-metrics-gatherer/"
+    },
+    "RabbitMQ": {
+        "ServiceName": "report-portal-rabbitmq",
+        "Family": "playon-shared-qe-services-staging-report-report-portal-rabbitmq",
+        "TaskRole": "arn:aws:iam::602416750225:role/playon/ecs/tasks/report-portal-service-tasks-role-staging",
+        "ExecutionTaskRole": "arn:aws:iam::602416750225:role/playon/ecs/task-exec/report-portal-service-task-exec-role-staging",
+        "AwsLogsGroup": "/aws/ecs/playon-shared-qe-services-staging/report-portal-rabbitmq/report-portal-rabbitmq",
+        "UserName": "rabbitmq",
+        "Password": "rabbitmq"
+    },
+    "AnalyzerTrain": {
+        "ServiceName": "report-portal-analyzer-train",
+        "Family": "playon-shared-qe-services-staging-report-portal-analyzer-train",
+        "TaskRole": "arn:aws:iam::602416750225:role/playon/ecs/tasks/report-portal-service-tasks-role-staging",
+        "ExecutionTaskRole": "arn:aws:iam::602416750225:role/playon/ecs/task-exec/report-portal-service-task-exec-role-staging",
+        "AwsLogsGroup": "/aws/ecs/playon-shared-qe-services-staging/report-portal-analyzer-train/"
+    }
+}
